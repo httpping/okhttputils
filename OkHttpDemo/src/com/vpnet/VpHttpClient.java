@@ -90,7 +90,7 @@ public class VpHttpClient {
 			call= client.newCall(reqestBuilder.build());	
 		}
 		
-		
+		calls.add(call);
 		
 		call.enqueue(new CallBackHandler(callBack));
 		return call;
@@ -136,7 +136,8 @@ public class VpHttpClient {
 		}else {
 			call= client.newCall(request);	
 		}
-	
+		
+		calls.add(call);
 		call.enqueue(new CallBackHandler(callBack));
 		return call;
 	}
@@ -189,6 +190,7 @@ public class VpHttpClient {
 		//对话框
 		showDialog(params.isShowDialog());
 		
+		calls.add(newCall);
 		newCall.enqueue(new CallBackHandler(callBack));
 		
 		
@@ -259,7 +261,7 @@ public class VpHttpClient {
 		reqestBuilder.post(requestBody);
 		 
 		Call call = client.newCall(reqestBuilder.build());
-		
+		calls.add(call);
 		call.enqueue(new CallBackHandler(callBack));
 		return call;
 	
