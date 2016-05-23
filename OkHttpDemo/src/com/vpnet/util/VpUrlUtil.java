@@ -8,7 +8,7 @@ import java.net.URLEncoder;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.vpnet.NetLog;
-import com.vpnet.RequestParams;
+import com.vpnet.VpRequestParams;
 
 public class VpUrlUtil {
 
@@ -21,7 +21,7 @@ public class VpUrlUtil {
 	 * @param body post的内容
 	 * @return
 	 */
-	private String addPublicParams(String url,RequestParams params,String body,boolean isEncrypt){
+	private String addPublicParams(String url,VpRequestParams params,String body,boolean isEncrypt){
 		
 		if(url == null){
 			return "";
@@ -38,7 +38,7 @@ public class VpUrlUtil {
      * @return encoded url if requested with params appended if any available
 	 * @throws UnsupportedEncodingException 
      */
-    public static String getUrlWithQueryString(boolean shouldEncodeUrl, String url, RequestParams params) throws UnsupportedEncodingException {
+    public static String getUrlWithQueryString(boolean shouldEncodeUrl, String url, VpRequestParams params) throws UnsupportedEncodingException {
         if (url == null)
             return null;
 

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -12,6 +15,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import android.R.integer;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -20,7 +24,7 @@ import android.view.View.OnClickListener;
 
 import com.vpnet.IShowDialog;
 import com.vpnet.NetLog;
-import com.vpnet.RequestParams;
+import com.vpnet.VpRequestParams;
 import com.vpnet.VpCallBack;
 import com.vpnet.VpHttpClient;
 
@@ -65,24 +69,26 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//
-				netForm();
-				//newTest();
+				//netForm();
+				newTest();
 			}
 		});
     }
    
+    
+    public int   count =0;
     public void newTest(){
     	
     	for (int i = 0; i < 1000; i++) {
-			netForm();
+			netForm(i+1);
 		}
     }
     
-    public void netForm(){
-    	RequestParams params = new RequestParams();
+    public void netForm(int c){
+    	VpRequestParams params = new VpRequestParams();
         params.put("name", "tanp post");
         params.put("age", "谭平sssssdf");
-        
+        params.put("count", c);
        // params.putJsonParams("{}");
         String path ="/sdcard/loveu/s3.jpg";
 		File file = new File(path);
@@ -102,15 +108,25 @@ public class MainActivity extends Activity {
 			@Override
 			public void onResponse(Call paramCall, Response paramResponse)  throws IOException {
 			     Headers headers = paramResponse.headers();
-			     
-				NetLog.d("tag", "" +paramResponse.body().string());
-				NetLog.d("tag", "" +headers.toString());
-
+			    
+			    String result =  paramResponse.body().string();
+				NetLog.d("tag", "" + result);
+				try {
+					JSONObject jsonObject = new JSONObject(result);
+					String count = jsonObject.getJSONObject("form").getString("count");
+					NetLog.d("finish-start", "start: "+count);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//NetLog.d("tag", "" +headers.toString());
+			
 			}
 
 			@Override
 			public void onFinish(Call call) {
-				
+				count++;
+				NetLog.d("finish", "count +" +count);
 			}
 
 			@Override
@@ -130,7 +146,7 @@ public class MainActivity extends Activity {
     
     public void net(){
     	  
-        RequestParams params = new RequestParams();
+        VpRequestParams params = new VpRequestParams();
         params.put("name", "tanp0");
         params.put("age", "谭平");
         params.putJsonParams("{}");
@@ -151,18 +167,6 @@ public class MainActivity extends Activity {
 				NetLog.d("tag", "" +headers.toString());
 
 			}
-
-			@Override
-			public void onFinish(Call call) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onStart(Call call) {
-				
-			}
-
 			 
 		});
     }

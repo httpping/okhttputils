@@ -20,7 +20,7 @@ import okhttp3.Response;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.vpnet.RequestParams.FileWrapper;
+import com.vpnet.VpRequestParams.FileWrapper;
 import com.vpnet.util.VpUrlUtil;
 
 /**
@@ -56,7 +56,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return 
 	 */
-	public Call requestForm(String url,String method, RequestParams params, VpCallBack callBack) {
+	public Call requestForm(String url,String method, VpRequestParams params, VpCallBack callBack) {
 		NetLog.d(TAG, "requestForm: " + url);
 		
 		 okhttp3.FormBody.Builder builder = new FormBody.Builder();
@@ -104,7 +104,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return
 	 */
-	public Call requestJson(String url,String method, RequestParams params, VpCallBack callBack) {
+	public Call requestJson(String url,String method, VpRequestParams params, VpCallBack callBack) {
 		
 		
 		okhttp3.Request.Builder reqestBuilder = new Request.Builder().url(url).addHeader("Content-Type", "application/json; charset=UTF-8");
@@ -150,7 +150,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return
 	 */
-	public Call request(String url,String method, RequestParams params, VpCallBack callBack) {
+	public Call request(String url,String method, VpRequestParams params, VpCallBack callBack) {
 		NetLog.d("request", "url :" + url);
 		if (TextUtils.isEmpty(params.jsonParams)) { //Form表单
 			 return requestForm(url, method, params, callBack);
@@ -167,7 +167,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return
 	 */
-	public Call get (String url, RequestParams params, VpCallBack callBack) {
+	public Call get (String url, VpRequestParams params, VpCallBack callBack) {
 		try {//add params
 			url =  VpUrlUtil.getUrlWithQueryString(false, url, params);
 		} catch (UnsupportedEncodingException e) {
@@ -222,7 +222,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return
 	 */
-	public Call post (String url, RequestParams params, VpCallBack callBack) {
+	public Call post (String url, VpRequestParams params, VpCallBack callBack) {
 		 return request(url, "post", params, callBack);
 	}
 	
@@ -233,7 +233,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return
 	 */
-	public Call postFile (String url, RequestParams params, VpCallBack callBack){
+	public Call postFile (String url, VpRequestParams params, VpCallBack callBack){
 		
 
 		NetLog.d(TAG, "requestForm: " + url);
@@ -307,6 +307,9 @@ public class VpHttpClient {
 		public void onFinish(Call call){
 			//清理
 			calls.remove(call);
+			if (mCallBack !=null) {
+				mCallBack.onFinish(call);
+			}
 		}
 		
 	}

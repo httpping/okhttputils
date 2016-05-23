@@ -55,7 +55,7 @@ import android.text.TextUtils;
 
  * </pre>
  */
-public class RequestParams implements Serializable {
+public class VpRequestParams implements Serializable {
 
 
     protected final static String LOG_TAG = "RequestParams";
@@ -72,7 +72,7 @@ public class RequestParams implements Serializable {
     /**
      * Constructs a new empty {@code RequestParams} instance.
      */
-    public RequestParams() {
+    public VpRequestParams() {
         this((Map<String, String>) null);
     }
 
@@ -82,7 +82,7 @@ public class RequestParams implements Serializable {
      *
      * @param source the source key/value string map to add.
      */
-    public RequestParams(Map<String, String> source) {
+    public VpRequestParams(Map<String, String> source) {
         if (source != null) {
             for (Map.Entry<String, String> entry : source.entrySet()) {
                 put(entry.getKey(), entry.getValue());
@@ -97,7 +97,7 @@ public class RequestParams implements Serializable {
      * @param key   the key name for the intial param.
      * @param value the value string for the initial param.
      */
-    public RequestParams(final String key, final String value) {
+    public VpRequestParams(final String key, final String value) {
         this(new HashMap<String, String>() {{
             put(key, value);
         }});
@@ -111,7 +111,7 @@ public class RequestParams implements Serializable {
      *                      Strings (including the value {@code null}).
      * @throws IllegalArgumentException if the number of arguments isn't even.
      */
-    public RequestParams(Object... keysAndValues) {
+    public VpRequestParams(Object... keysAndValues) {
         int len = keysAndValues.length;
         if (len % 2 != 0)
             throw new IllegalArgumentException("Supplied arguments must be even");
