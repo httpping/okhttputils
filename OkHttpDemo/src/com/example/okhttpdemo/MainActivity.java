@@ -120,6 +120,7 @@ public class MainActivity extends Activity {
 
 			 
 		});
+        
        // client.cancel(call);
         
        /* testOkHttpMulti();
