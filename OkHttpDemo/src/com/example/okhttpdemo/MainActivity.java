@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
     public int   count =0;
     public void newTest(){
     	
-    	for (int i = 0; i < 1000; i++) {
+    	for (int i = 0; i < 10; i++) {
 			netForm(i+1);
 		}
     }
@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}*/
-        String url ="http://httpbin.org/post";
+        String url ="https://httpbin.org/post";
         Call call = client.post(url, params, new VpCallBack() {
 
 			@Override
@@ -158,7 +158,7 @@ public class MainActivity extends Activity {
         params.put("age", "谭平");
         params.putJsonParams("{}");
         params.putHead("hes", "1345");
-        String url ="http://httpbin.org/get";
+        String url ="https://httpbin.org/get";
         client.get(url, params, new VpCallBack() {
 
 			@Override

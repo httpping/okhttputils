@@ -354,7 +354,7 @@ public class VpHttpClient {
 			
 			if (mCallBack !=null) {
 				Message message = new Message();
-				message.what = ON_FAIL;
+				message.what = ON_FINISH;
 				message.obj = response;
 				message.setTarget(mHandler);
 				message.sendToTarget();
