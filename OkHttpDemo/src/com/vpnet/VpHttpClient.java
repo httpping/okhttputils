@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.MultipartBody.Builder;
@@ -18,6 +19,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
 import com.vpnet.VpRequestParams.FileWrapper;
@@ -172,7 +175,9 @@ public class VpHttpClient {
 			url =  VpUrlUtil.getUrlWithQueryString(false, url, params);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			callBack.onFailure(null, e);
+			VpResponse vpResponse = new VpResponse();
+			vpResponse.errorMsg = e.getMessage();
+			callBack.onFailure(vpResponse);
 			return null;
 		}
 		
@@ -287,8 +292,16 @@ public class VpHttpClient {
 			paramIOException.printStackTrace();
 			NetLog.d("result", "onFailure:"+paramIOException);
 			
+			VpResponse response = new VpResponse();
+			response.callBack = mCallBack;
+			response.errorMsg = paramIOException.getMessage();
+			
 			if (mCallBack !=null) {
-				mCallBack.onFailure(paramCall, paramIOException);
+				Message message = new Message();
+				message.what = ON_FAIL;
+				message.obj = response;
+				message.setTarget(mHandler);
+				message.sendToTarget();
 			}
 			
 			onFinish(paramCall);
@@ -298,8 +311,16 @@ public class VpHttpClient {
 		public void onResponse(Call paramCall, Response paramResponse)
 				throws IOException {
 			NetLog.d("result", "onResponse");
+			VpResponse response = new VpResponse();
+			response.body = paramResponse.body().string();
+			response.headers = paramResponse.headers();
+			response.callBack = mCallBack;
 			if (mCallBack !=null) {
-				mCallBack.onResponse(paramCall, paramResponse);
+				Message message = new Message();
+				message.what = ON_RESPONSE;
+				message.obj = response;
+				message.setTarget(mHandler);
+				message.sendToTarget();
 			}
 			onFinish(paramCall);
 		}
@@ -307,12 +328,45 @@ public class VpHttpClient {
 		public void onFinish(Call call){
 			//清理
 			calls.remove(call);
+			
+			VpResponse response = new VpResponse();
+			response.callBack = mCallBack;
+			
 			if (mCallBack !=null) {
-				mCallBack.onFinish(call);
+				Message message = new Message();
+				message.what = ON_FAIL;
+				message.obj = response;
+				message.setTarget(mHandler);
+				message.sendToTarget();
 			}
 		}
 		
 	}
+	
+	
+	private static final int ON_RESPONSE = 1025;
+	private static final int ON_FAIL = 1026;
+	private static final int ON_FINISH = 1027;
+	Handler mHandler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			VpResponse response =  (VpResponse) msg.obj ;
+
+			switch (msg.what) {
+			case ON_RESPONSE:
+				response.callBack.onResponse(response);
+				break;
+			case ON_FAIL:
+				response.callBack.onFailure(response);
+				break;
+			case ON_FINISH:
+				response.callBack.onFinish();
+				break ;
+			default:
+				break;
+			}
+		};
+	};
+
 	
 	
 	

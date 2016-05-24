@@ -15,14 +15,14 @@ public abstract class VpCallBack   {
 	
 	
 	
-	public abstract void onFailure(Call paramCall, IOException paramIOException);
-	public abstract void onResponse(Call paramCall, Response paramResponse) throws IOException;
+	public abstract void onFailure(VpResponse response);
+	public abstract void onResponse(VpResponse response);
 	
-	public void onFinish(Call call){}
+	public void onFinish( ){}
 	/**
 	 * 备用
 	 * @param call
 	 */
-	public void onStart(Call call){}
+	public void onStart(){}
 	 
 }

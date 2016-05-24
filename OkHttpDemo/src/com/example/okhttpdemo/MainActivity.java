@@ -4,18 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import android.R.integer;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -24,9 +19,10 @@ import android.view.View.OnClickListener;
 
 import com.vpnet.IShowDialog;
 import com.vpnet.NetLog;
-import com.vpnet.VpRequestParams;
 import com.vpnet.VpCallBack;
 import com.vpnet.VpHttpClient;
+import com.vpnet.VpRequestParams;
+import com.vpnet.VpResponse;
 
 
 public class MainActivity extends Activity {
@@ -101,6 +97,17 @@ public class MainActivity extends Activity {
         Call call = client.post(url, params, new VpCallBack() {
 
 			@Override
+			public void onFailure(VpResponse response) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onResponse(VpResponse response) {
+				NetLog.d("tag", Thread.currentThread() + "" +response.body);
+			}
+
+			/*@Override
 			public void onFailure(Call paramCall, IOException paramIOException) {
 				
 			}
@@ -132,7 +139,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onStart(Call call) {
 				
-			}
+			}*/
 
 			 
 		});
@@ -155,6 +162,17 @@ public class MainActivity extends Activity {
         client.get(url, params, new VpCallBack() {
 
 			@Override
+			public void onFailure(VpResponse response) {
+				
+			}
+
+			@Override
+			public void onResponse(VpResponse response) {
+				NetLog.d("tag", Thread.currentThread() + "" +response.body);
+				
+			}/*
+
+			@Override
 			public void onFailure(Call paramCall, IOException paramIOException) {
 				// TODO Auto-generated method stub
 				
@@ -168,7 +186,7 @@ public class MainActivity extends Activity {
 
 			}
 			 
-		});
+		*/});
     }
     
     
