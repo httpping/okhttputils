@@ -37,18 +37,37 @@ public class VpHttpClient {
    public static final   MediaType JSON_TYPE = MediaType.parse("application/json; charset=utf-8");
 
 	List<Call> calls = new LinkedList<Call>();
-	OkHttpClient client;
+	static OkHttpClient client;
 	Context mContext; // 上下文
 	
 	IShowDialog onShowDialog;//加载对话框
 
 	public VpHttpClient(Context context) {
 		mContext = context;
-	    client = new OkHttpClient.Builder()
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .writeTimeout(180, TimeUnit.SECONDS)
-        .readTimeout(180, TimeUnit.SECONDS)
-        .build();
+
+	}
+	
+	/**
+	 * 单利
+	 * @return
+	 */
+	public OkHttpClient getOkHttpClient(){
+		
+		if (client == null) {
+			synchronized (VpHttpClient.class) {
+				if (client == null) {
+					 client = new OkHttpClient.Builder()
+				        .connectTimeout(10, TimeUnit.SECONDS)
+				        .writeTimeout(180, TimeUnit.SECONDS)
+				        .readTimeout(180, TimeUnit.SECONDS)
+				        .build();
+				}
+			}
+			
+		}
+	   
+	    
+	    return client;
 	}
 	
 	/**
@@ -90,7 +109,7 @@ public class VpHttpClient {
 	        OkHttpClient onRepeatable = okHttpClientBuilder.build();
 			call= onRepeatable.newCall(reqestBuilder.build());
 		}else {
-			call= client.newCall(reqestBuilder.build());	
+			call= getOkHttpClient().newCall(reqestBuilder.build());	
 		}
 		
 		calls.add(call);
@@ -137,7 +156,7 @@ public class VpHttpClient {
 	        OkHttpClient onRepeatable = okHttpClientBuilder.build();
 			call= onRepeatable.newCall(request);
 		}else {
-			call= client.newCall(request);	
+			call= getOkHttpClient().newCall(request);	
 		}
 		
 		calls.add(call);
@@ -190,7 +209,7 @@ public class VpHttpClient {
 		
 		reqestBuilder.get();
 		Request request = reqestBuilder.build();
-		Call newCall = client.newCall(request);
+		Call newCall = getOkHttpClient().newCall(request);
 		
 		//对话框
 		showDialog(params.isShowDialog());
@@ -265,7 +284,7 @@ public class VpHttpClient {
  
 		reqestBuilder.post(requestBody);
 		 
-		Call call = client.newCall(reqestBuilder.build());
+		Call call = getOkHttpClient().newCall(reqestBuilder.build());
 		calls.add(call);
 		call.enqueue(new CallBackHandler(callBack));
 		return call;
