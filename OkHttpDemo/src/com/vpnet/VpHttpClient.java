@@ -315,6 +315,7 @@ public class VpHttpClient {
 			response.body = paramResponse.body().string();
 			response.headers = paramResponse.headers();
 			response.callBack = mCallBack;
+			NetLog.d("result", ""+response.body);
 			if (mCallBack !=null) {
 				Message message = new Message();
 				message.what = ON_RESPONSE;
