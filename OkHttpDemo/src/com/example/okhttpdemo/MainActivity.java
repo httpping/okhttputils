@@ -14,8 +14,12 @@ import okhttp3.Response;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import com.vpnet.IShowDialog;
 import com.vpnet.NetLog;
@@ -52,12 +56,31 @@ public class MainActivity extends Activity {
 			}
 		});
         
+        Log.d("", "");
         findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				//
 				net();
+				
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						Looper.prepare();
+						Looper.myLooper();
+					//	Looper.prepare();
+						Handler handler = new Handler(Looper.getMainLooper()){
+							public void handleMessage(android.os.Message msg) {
+								NetLog.d("handler", ""+Thread.currentThread().getName());
+							};
+						};
+						handler.sendEmptyMessageDelayed(1, 1000);
+					//	Looper.loop();
+					}
+					
+				}).start();
 			}
 		});
         findViewById(R.id.button2).setOnClickListener(new OnClickListener() {
@@ -75,7 +98,7 @@ public class MainActivity extends Activity {
     public int   count =0;
     public void newTest(){
     	
-    	for (int i = 0; i < 10; i++) {
+    	for (int i = 0; i < 1000; i++) {
 			netForm(i+1);
 		}
     }
@@ -84,6 +107,8 @@ public class MainActivity extends Activity {
     	VpRequestParams params = new VpRequestParams();
         params.put("name", "tanp post");
         params.put("age", "谭平sssssdf");
+        params.put("sex", 1);
+        params.put("中文key", "中文value");
         params.put("count", c);
        // params.putJsonParams("{}");
         String path ="/sdcard/loveu/s3.jpg";

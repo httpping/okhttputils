@@ -20,6 +20,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -194,9 +195,7 @@ public class VpHttpClient {
 			url =  VpUrlUtil.getUrlWithQueryString(false, url, params);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			VpResponse vpResponse = new VpResponse();
-			vpResponse.errorMsg = e.getMessage();
-			callBack.onFailure(vpResponse);
+			new CallBackHandler(callBack).onFailure(null, e);
 			return null;
 		}
 		
@@ -379,6 +378,7 @@ public class VpHttpClient {
 				response.callBack.onFailure(response);
 				break;
 			case ON_FINISH:
+				dismissDialog();
 				response.callBack.onFinish();
 				break ;
 			default:
