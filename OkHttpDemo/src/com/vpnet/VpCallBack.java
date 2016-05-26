@@ -13,6 +13,7 @@ import okhttp3.Response;
 public abstract class VpCallBack   {
 
 	
+	public VpRequestParams params;
 	
 	
 	public abstract void onFailure(VpResponse response);

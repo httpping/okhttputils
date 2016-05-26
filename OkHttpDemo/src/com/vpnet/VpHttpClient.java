@@ -79,7 +79,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return 
 	 */
-	public Call requestForm(String url,String method, VpRequestParams params, VpCallBack callBack) {
+	private Call requestForm(String url,String method, VpRequestParams params, VpCallBack callBack) {
 		NetLog.d(TAG, "requestForm: " + url);
 		
 		 okhttp3.FormBody.Builder builder = new FormBody.Builder();
@@ -127,7 +127,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return
 	 */
-	public Call requestJson(String url,String method, VpRequestParams params, VpCallBack callBack) {
+	private Call requestJson(String url,String method, VpRequestParams params, VpCallBack callBack) {
 		
 		
 		okhttp3.Request.Builder reqestBuilder = new Request.Builder().url(url).addHeader("Content-Type", "application/json; charset=UTF-8");
@@ -173,7 +173,7 @@ public class VpHttpClient {
 	 * @param callBack
 	 * @return
 	 */
-	public Call request(String url,String method, VpRequestParams params, VpCallBack callBack) {
+	private Call request(String url,String method, VpRequestParams params, VpCallBack callBack) {
 		NetLog.d("request", "url :" + url);
 		if (TextUtils.isEmpty(params.jsonParams)) { //Form表单
 			 return requestForm(url, method, params, callBack);
@@ -191,6 +191,9 @@ public class VpHttpClient {
 	 * @return
 	 */
 	public Call get (String url, VpRequestParams params, VpCallBack callBack) {
+		if (callBack !=null) {
+			callBack.params = params;
+		}
 		try {//add params
 			url =  VpUrlUtil.getUrlWithQueryString(false, url, params);
 		} catch (UnsupportedEncodingException e) {
@@ -198,6 +201,7 @@ public class VpHttpClient {
 			new CallBackHandler(callBack).onFailure(null, e);
 			return null;
 		}
+		
 		
 		
 		okhttp3.Request.Builder reqestBuilder = new Request.Builder().url(url); 
@@ -246,6 +250,9 @@ public class VpHttpClient {
 	 * @return
 	 */
 	public Call post (String url, VpRequestParams params, VpCallBack callBack) {
+		if (callBack !=null) {
+			callBack.params = params;
+		}
 		 return request(url, "post", params, callBack);
 	}
 	
@@ -257,7 +264,9 @@ public class VpHttpClient {
 	 * @return
 	 */
 	public Call postFile (String url, VpRequestParams params, VpCallBack callBack){
-		
+		if (callBack !=null) {
+			callBack.params = params;
+		}
 
 		NetLog.d(TAG, "requestForm: " + url);
 		
@@ -378,7 +387,11 @@ public class VpHttpClient {
 				response.callBack.onFailure(response);
 				break;
 			case ON_FINISH:
-				dismissDialog();
+				
+				//close the dialog 
+				if (response.callBack.params !=null && response.callBack.params.isShowDialog()) {
+					dismissDialog();	
+				}
 				response.callBack.onFinish();
 				break ;
 			default:
