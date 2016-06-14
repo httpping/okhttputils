@@ -354,8 +354,6 @@ public class VpHttpClient {
 		}
 		
 		public void onFinish(Call call){
-			//清理
-			calls.remove(call);
 			
 			VpResponse response = new VpResponse();
 			response.callBack = mCallBack;
@@ -393,6 +391,8 @@ public class VpHttpClient {
 				if (response.callBack.params !=null && response.callBack.params.isShowDialog()) {
 					dismissDialog();	
 				}
+				//清理
+				calls.remove(response.call);
 				response.callBack.onFinish();
 				response.callBack.onFinish(response);
 				break ;
@@ -439,5 +439,6 @@ public class VpHttpClient {
 				call.cancel();
 			}
 		}
+		calls.remove(call);
 	}
 }

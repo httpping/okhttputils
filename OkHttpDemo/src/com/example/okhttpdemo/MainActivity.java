@@ -112,10 +112,11 @@ public class MainActivity extends Activity {
 			}
 		});
     	mulitRequestUtil.show();
-    	for (int i = 0; i < 4; i++) {
+    	for (int i = 0; i < 20; i++) {
 			Call call = netForm(i+1,mulitRequestUtil);
 			mulitRequestUtil.add(call);
 		}
+    	client.cancelAll();
     }
     
     public Call netForm(int c,final MulitRequestUtil mulitRequestUtil){
@@ -134,8 +135,7 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}*/
         String url ="https://httpbin.org/post";
-        final Call call  
-        = client.post(url, params, new VpCallBack() {
+        Call call  = client.post(url, params, new VpCallBack() {
 
 			@Override
 			public void onFailure(VpResponse response) {
