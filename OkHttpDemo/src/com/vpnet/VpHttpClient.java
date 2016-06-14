@@ -112,7 +112,6 @@ public class VpHttpClient {
 		}else {
 			call= getOkHttpClient().newCall(reqestBuilder.build());	
 		}
-		
 		calls.add(call);
 		
 		call.enqueue(new CallBackHandler(callBack));
@@ -375,7 +374,7 @@ public class VpHttpClient {
 	private static final int ON_RESPONSE = 1025;
 	private static final int ON_FAIL = 1026;
 	private static final int ON_FINISH = 1027;
-	Handler mHandler = new Handler(){
+	Handler mHandler = new Handler(Looper.getMainLooper()){
 		public void handleMessage(android.os.Message msg) {
 			VpResponse response =  (VpResponse) msg.obj ;
 
@@ -417,10 +416,9 @@ public class VpHttpClient {
 	 */
 	public void cancelAll(){
 		
-		for (int i = 0; i < calls.size(); i++) {
-			Call call = calls.get(i);
-			cancel(call);
-		}
+		calls.clear();
+		client.dispatcher().cancelAll();
+		
 		
 	}
 	
