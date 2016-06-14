@@ -27,6 +27,7 @@ import com.vpnet.VpCallBack;
 import com.vpnet.VpHttpClient;
 import com.vpnet.VpRequestParams;
 import com.vpnet.VpResponse;
+import com.vpnet.util.MulitRequestUtil;
 
 
 public class MainActivity extends Activity {
@@ -98,12 +99,26 @@ public class MainActivity extends Activity {
     public int   count =0;
     public void newTest(){
     	
-    	for (int i = 0; i < 1000; i++) {
-			netForm(i+1);
+    	MulitRequestUtil mulitRequestUtil = new MulitRequestUtil(new IShowDialog() {
+			
+			@Override
+			public void show() {
+				NetLog.d("mu-result", "multi- start");
+			}
+			
+			@Override
+			public void dismiss() {
+				NetLog.d("mu-result", "multi- end");
+			}
+		});
+    	mulitRequestUtil.show();
+    	for (int i = 0; i < 4; i++) {
+			Call call = netForm(i+1,mulitRequestUtil);
+			mulitRequestUtil.add(call);
 		}
     }
     
-    public void netForm(int c){
+    public Call netForm(int c,final MulitRequestUtil mulitRequestUtil){
     	VpRequestParams params = new VpRequestParams();
         params.put("name", "tanp post");
         params.put("age", "谭平sssssdf");
@@ -119,17 +134,28 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}*/
         String url ="https://httpbin.org/post";
-        Call call = client.post(url, params, new VpCallBack() {
+        final Call call  
+        = client.post(url, params, new VpCallBack() {
 
 			@Override
 			public void onFailure(VpResponse response) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void onResponse(VpResponse response) {
-				NetLog.d("tag", Thread.currentThread() + "" +response.body);
+				//NetLog.d("tag", Thread.currentThread() + "" +response.body);
+			}
+			
+			@Override
+			public void onFinish() {
+				super.onFinish();
+				
+			}
+			
+			@Override
+			public void onFinish(VpResponse response) {
+				super.onFinish(response);
+				mulitRequestUtil.isFinish(response.call);
 			}
 
 			/*@Override
@@ -169,6 +195,8 @@ public class MainActivity extends Activity {
 			 
 		});
         
+        return call; 
+        	
        // client.cancel(call);
         
        /* testOkHttpMulti();

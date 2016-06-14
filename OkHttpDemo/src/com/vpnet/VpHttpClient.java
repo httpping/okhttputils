@@ -341,6 +341,7 @@ public class VpHttpClient {
 			response.body = paramResponse.body().string();
 			response.headers = paramResponse.headers();
 			response.callBack = mCallBack;
+			response.call = paramCall;
 			NetLog.d("result", ""+response.body);
 			if (mCallBack !=null) {
 				Message message = new Message();
@@ -358,6 +359,7 @@ public class VpHttpClient {
 			
 			VpResponse response = new VpResponse();
 			response.callBack = mCallBack;
+			response.call = call;
 			
 			if (mCallBack !=null) {
 				Message message = new Message();
@@ -392,6 +394,7 @@ public class VpHttpClient {
 					dismissDialog();	
 				}
 				response.callBack.onFinish();
+				response.callBack.onFinish(response);
 				break ;
 			default:
 				break;
@@ -416,9 +419,11 @@ public class VpHttpClient {
 	 */
 	public void cancelAll(){
 		
+		for (int i = 0; i < calls.size(); i++) {
+			Call call = calls.get(i);
+			cancel(call);
+		}
 		calls.clear();
-		client.dispatcher().cancelAll();
-		
 		
 	}
 	

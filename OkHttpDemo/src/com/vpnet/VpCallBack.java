@@ -19,7 +19,11 @@ public abstract class VpCallBack   {
 	public abstract void onFailure(VpResponse response);
 	public abstract void onResponse(VpResponse response);
 	
-	public void onFinish( ){}
+	public void onFinish(){}
+	public void onFinish(VpResponse response){}
+
+	
+	
 	/**
 	 * 备用
 	 * @param call
